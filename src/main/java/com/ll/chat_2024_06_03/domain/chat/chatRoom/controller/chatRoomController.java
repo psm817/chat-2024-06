@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/char/room")
+@RequestMapping("/chat/room")
 public class chatRoomController {
     @GetMapping("/{roomId}")
     @ResponseBody
@@ -17,17 +17,7 @@ public class chatRoomController {
     }
 
     @GetMapping("/make")
-    @ResponseBody
     public String showMake() {
-        return """
-                <form action="">
-                   <div>
-                        <input type="text">
-                   </div>
-                   <div>
-                        <input type="submit">
-                   </div>
-                </form>
-                """.stripIndent();
+        return "domain/chat/chatRoom/make";
     }
 }
