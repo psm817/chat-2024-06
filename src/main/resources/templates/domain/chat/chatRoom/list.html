@@ -1,0 +1,12 @@
+<div>
+    <a href="make">채팅방 생성</a>
+</div>
+
+<ul>
+    <li th:each="chatRoom : ${chatRooms}">
+        <a th:href="${chatRoomId}">
+            <span th:text="${chatRoom.id}"></span>
+            <span th:text="${chatRoom.name}"></span>
+        </a>
+    </li>
+</ul>
