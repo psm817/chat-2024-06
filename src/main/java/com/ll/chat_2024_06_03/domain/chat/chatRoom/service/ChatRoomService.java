@@ -13,7 +13,9 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
 
     public void make(String name) {
-        ChatRoom chatRoom = new ChatRoom(name);
+        ChatRoom chatRoom = ChatRoom.builder()
+                .name(name)
+                .build();
 
         chatRoomRepository.save(chatRoom);
     }
