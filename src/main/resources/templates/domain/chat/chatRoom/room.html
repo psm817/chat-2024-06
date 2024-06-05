@@ -5,7 +5,7 @@
     <a href="list">채팅방 목록</a>
 </div>
 
-<form th:action="@{|/chat/room/${roomId}/write|}" method="POST">
+<form onsubmit="submitWriteForm(this); return false;" method="POST">
     <input type="text" name="writerName" placeholder="작성자 명">
     <input type="text" name="content" placeholder="내용">
     <input type="submit" value="작성">
@@ -21,3 +21,45 @@
         </li>
     </ul>
 </div>
+
+<script th:inline="javascript">
+    const roomId = /*[[${roomId}]]*/ 0;
+</script>
+
+<script>
+    function submitWriteForm(form) {
+        form.writerName.value = form.writerName.value.trim();
+
+        if(form.writerName.value.length == 0) {
+            alert("작성자 명을 입력해주세요.");
+            form.writerName.focus();
+            return;
+        }
+
+        form.writerName.value = form.writerName.value.trim();
+
+        if(form.content.value.length == 0) {
+            alert("내용을 입력해주세요.");
+            form.content.focus();
+            return;
+        }
+
+        // form.submit();
+        const action = `/chat/room/${roomId}/write`;
+
+        fetch(
+            action,
+            {
+                method: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'Content-Type' : 'application/json',
+                },
+                body: JSON.stringify({
+                    writerName: form.writerName.value,
+                    content: form.content.value,
+                }),
+            }
+        );
+    }
+</script>
