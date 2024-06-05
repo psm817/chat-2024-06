@@ -1,11 +1,11 @@
 package com.ll.chat_2024_06_03.domain.chat.chatRoom.service;
 
-import com.ll.chat_2024_06_03.domain.chat.chatRoom.entity.ChatMessage;
+import com.ll.chat_2024_06_03.domain.chat.chatMessage.entity.ChatMessage;
 import com.ll.chat_2024_06_03.domain.chat.chatRoom.entity.ChatRoom;
 import com.ll.chat_2024_06_03.domain.chat.chatRoom.repository.ChatRoomRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;

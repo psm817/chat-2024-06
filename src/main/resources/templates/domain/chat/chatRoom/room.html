@@ -5,6 +5,8 @@
     <a href="list">채팅방 목록</a>
 </div>
 
+<a onclick="return false;" href="https://www.naver.com">네이버로 이동</a>
+
 <form onsubmit="submitWriteForm(this); return false;" method="POST">
     <input type="text" name="writerName" placeholder="작성자 명">
     <input type="text" name="content" placeholder="내용">
@@ -12,39 +14,46 @@
 </form>
 
 <div>
-    <ul>
+    <div>
+        <button onclick="loadMoreChatMessages();" type="button">더 불러오기</button>
+    </div>
+    <ul class="chat__messages">
         <li th:each="chatMessage : ${room.chatMessages}">
-            <span th:text="${chatMessage.writerName}"></span>
+            <th:block th:text="${chatMessage.writerName}"></th:block>
             :
-            (<span th:text="${chatMessage.id}"></span>)
-            <span th:text="${chatMessage.content}"></span>
+            (
+            <th:block th:text="${chatMessage.id}"></th:block>
+            )
+            <th:block th:text="${chatMessage.content}"></th:block>
         </li>
     </ul>
 </div>
 
 <script th:inline="javascript">
     const roomId = /*[[${roomId}]]*/ 0;
+    let lastChatMessageId = /*[[${room.chatMessages.size > 0 ? room.chatMessages.first.id : 0}]]*/ 0;
 </script>
 
 <script>
+    const chatMessagesEl = document.querySelector(".chat__messages");
+
     function submitWriteForm(form) {
         form.writerName.value = form.writerName.value.trim();
 
-        if(form.writerName.value.length == 0) {
+        if ( form.writerName.value.length == 0 ) {
             alert("작성자 명을 입력해주세요.");
             form.writerName.focus();
             return;
         }
 
-        form.writerName.value = form.writerName.value.trim();
+        form.content.value = form.content.value.trim();
 
-        if(form.content.value.length == 0) {
+        if ( form.content.value.length == 0 ) {
             alert("내용을 입력해주세요.");
             form.content.focus();
             return;
         }
 
-        // form.submit();
         const action = `/chat/room/${roomId}/write`;
 
         fetch(
@@ -60,15 +69,45 @@
                     content: form.content.value,
                 }),
             }
-            ).then(
-                response => response.json()
-            ).then(
-                json => {
-                    if(json.msg) alert(json.msg);
-                }
-            ).catch(error => alert(error));
+        ).catch(error => alert(error));
 
-            form.content.value = '';
-            form.content.focus();
+        form.content.value = '';
+        form.content.focus();
     }
+
+    function loadMoreChatMessages() {
+        const action = `/chat/room/${roomId}/messagesAfter/${lastChatMessageId}`;
+
+        fetch(
+            action,
+            {
+                method: 'GET',
+                headers:  {
+                    'accept' : 'application/json'
+                }
+            }
+        )
+        .then(response => response.json())
+        .then(json => drawMoreChatMessages(json.data.messages))
+        .then(() => setTimeout(loadMoreChatMessages, 500))
+        .catch(error => alert(error));
+    }
+
+    function drawMoreChatMessages(messages) {
+        messages.forEach((message) => {
+            drawMoreChatMessage(message);
+        });
+    }
+
+    function drawMoreChatMessage(message) {
+        lastChatMessageId = message.id;
+
+        chatMessagesEl
+            .insertAdjacentHTML(
+                "afterBegin",
+                `<li>${message.writerName} : ( ${message.id} ) ${message.content}</li>`
+            );
+    }
+
+    loadMoreChatMessages();
 </script>
