@@ -3,6 +3,7 @@ package com.ll.chat_2024_06_03.domain.chat.chatRoom.controller;
 import com.ll.chat_2024_06_03.domain.chat.chatRoom.entity.ChatMessage;
 import com.ll.chat_2024_06_03.domain.chat.chatRoom.entity.ChatRoom;
 import com.ll.chat_2024_06_03.domain.chat.chatRoom.service.ChatRoomService;
+import com.ll.chat_2024_06_03.global.rsData.RsData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +59,7 @@ public class ChatRoomController {
         private String content;
     }
 
-    @Setter
+    @Getter
     @AllArgsConstructor
     public static class WriterResponseBody {
         private Long chatMessageId;
@@ -66,12 +67,12 @@ public class ChatRoomController {
 
     @PostMapping("/{roomId}/write")
     @ResponseBody
-    public  WriterResponseBody write(
+    public RsData<WriterResponseBody> write(
             @PathVariable("roomId") final long roomId,
             @RequestBody final WriterRequestBody requestBody
     ) {
         ChatMessage chatMessage = chatRoomService.write(roomId, requestBody.getWriterName(), requestBody.getContent());
 
-        return new WriterResponseBody((chatMessage.getId()));
+        return RsData.of("S-1", "%d번 메시지를 작성하였습니다.".formatted(chatMessage.getId()), new WriterResponseBody(chatMessage.getId()));
     }
 }

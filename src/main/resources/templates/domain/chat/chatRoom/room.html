@@ -51,8 +51,8 @@
             action,
             {
                 method: 'POST',
-                headers: {
-                    'accept': 'application/json',
+                headers:  {
+                    'accept' : 'application/json',
                     'Content-Type' : 'application/json',
                 },
                 body: JSON.stringify({
@@ -60,6 +60,15 @@
                     content: form.content.value,
                 }),
             }
-        );
+            ).then(
+                response => response.json()
+            ).then(
+                json => {
+                    if(json.msg) alert(json.msg);
+                }
+            ).catch(error => alert(error));
+
+            form.content.value = '';
+            form.content.focus();
     }
 </script>
